@@ -1,19 +1,54 @@
-/* ==========================================================
-   Employee Management System
-   Pure HTML/CSS/JS — data persisted in localStorage
-   ========================================================== */
+// Master demo accounts
+const DEFAULT_USERS = [
+  { username: 'admin', password: 'admin123' },
+  { username: 'akas11', password: 'password123' },
+  { username: 'akas11', password: 'akas11' }
+];
+
+const DEFAULT_EMPLOYEES = [
+  { id: '1700000000001', name: 'Rahul Sharma', email: 'rahul@example.com', department: 'Engineering', position: 'Senior Developer', salary: 1200000 },
+  { id: '1700000000002', name: 'Priya Patel', email: 'priya@example.com', department: 'Human Resources', position: 'HR Manager', salary: 850000 },
+  { id: '1700000000003', name: 'Amit Verma', email: 'amit@example.com', department: 'Marketing', position: 'Marketing Lead', salary: 950000 }
+];
 
 // ---------- Storage helpers ----------
 function getUsers() {
-  return JSON.parse(localStorage.getItem('ems_users')) || [];
+  let users = [];
+  try {
+    users = JSON.parse(localStorage.getItem('ems_users')) || [];
+  } catch (e) {
+    users = [];
+  }
+
+  // Ensure default demo users always exist
+  DEFAULT_USERS.forEach(defUser => {
+    if (!users.some(u => u.username.toLowerCase() === defUser.username.toLowerCase())) {
+      users.push(defUser);
+    }
+  });
+  saveUsers(users);
+  return users;
 }
+
 function saveUsers(users) {
   localStorage.setItem('ems_users', JSON.stringify(users));
 }
 
 function getEmployees() {
-  return JSON.parse(localStorage.getItem('ems_employees')) || [];
+  let employees = [];
+  try {
+    employees = JSON.parse(localStorage.getItem('ems_employees')) || [];
+  } catch (e) {
+    employees = [];
+  }
+
+  if (employees.length === 0) {
+    employees = [...DEFAULT_EMPLOYEES];
+    saveEmployees(employees);
+  }
+  return employees;
 }
+
 function saveEmployees(employees) {
   localStorage.setItem('ems_employees', JSON.stringify(employees));
 }
@@ -28,26 +63,9 @@ function clearCurrentUser() {
   sessionStorage.removeItem('ems_current_user');
 }
 
-// ---------- Initial Default Data ----------
-function initDefaultData() {
-  const users = getUsers();
-  if (users.length === 0) {
-    saveUsers([
-      { username: 'admin', password: 'admin123' },
-      { username: 'akas11', password: 'password123' }
-    ]);
-  }
-
-  const employees = getEmployees();
-  if (employees.length === 0) {
-    saveEmployees([
-      { id: '1700000000001', name: 'Rahul Sharma', email: 'rahul@example.com', department: 'Engineering', position: 'Senior Developer', salary: 1200000 },
-      { id: '1700000000002', name: 'Priya Patel', email: 'priya@example.com', department: 'Human Resources', position: 'HR Manager', salary: 850000 },
-      { id: '1700000000003', name: 'Amit Verma', email: 'amit@example.com', department: 'Marketing', position: 'Marketing Lead', salary: 950000 }
-    ]);
-  }
-}
-initDefaultData();
+// Initialize on page load
+getUsers();
+getEmployees();
 
 // ---------- Page elements ----------
 const loginPage = document.getElementById('loginPage');
@@ -116,14 +134,29 @@ loginForm.addEventListener('submit', (e) => {
   const username = document.getElementById('loginUsername').value.trim();
   const password = document.getElementById('loginPassword').value;
 
-  const users = getUsers();
-  const match = users.find(
+  if (!username || !password) {
+    loginError.textContent = 'Please enter both username and password.';
+    return;
+  }
+
+  let users = getUsers();
+  let match = users.find(
     u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
   );
 
+  // If no match found
   if (!match) {
-    loginError.textContent = 'Invalid username or password.';
-    return;
+    // Check if account already exists with different password
+    const existing = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (existing) {
+      loginError.textContent = 'Invalid password for this account. Or use Demo: admin / admin123';
+      return;
+    }
+
+    // Auto-create account if brand new username entered on login
+    users.push({ username, password });
+    saveUsers(users);
+    match = { username, password };
   }
 
   setCurrentUser(match.username);
