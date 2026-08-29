@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Management System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="loginPage" class="auth-page">
+  <div class="auth-card">
+    <h1>Employee Management System</h1>
+    <h2>Login</h2>
+    <p id="loginError" class="error-msg"></p>
+    <form id="loginForm">
+      <label>Username</label>
+      <input type="text" id="loginUsername" required>
+
+      <label>Password</label>
+      <input type="password" id="loginPassword" required>
+
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <p class="switch-link">Don't have an account? <a href="#" id="goToRegister">Register here</a></p>
+  </div>
+</section>
+
+<!-- ============ REGISTER ============ -->
+<section id="registerPage" class="auth-page hidden">
+  <div class="auth-card">
+    <h1>Employee Management System</h1>
+    <h2>Register</h2>
+    <p id="registerError" class="error-msg"></p>
+    <form id="registerForm">
+      <label>Username</label>
+      <input type="text" id="registerUsername" required>
+
+      <label>Password</label>
+      <input type="password" id="registerPassword" required>
+
+      <label>Confirm Password</label>
+      <input type="password" id="registerConfirmPassword" required>
+
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="switch-link">Already have an account? <a href="#" id="goToLogin">Login here</a></p>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<section id="dashboardPage" class="dashboard hidden">
+  <header class="topbar">
+    <h1>Employee Management System</h1>
+    <div class="topbar-right">
+      <span id="welcomeUser"></span>
+      <button id="logoutBtn" class="btn btn-outline">Logout</button>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- Add / Edit Employee Form -->
+    <div class="card">
+      <h2 id="formTitle">Add Employee</h2>
+      <form id="employeeForm">
+        <input type="hidden" id="employeeId">
+
+        <div class="form-grid">
+          <div>
+            <label>Full Name</label>
+            <input type="text" id="empName" required>
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" id="empEmail" required>
+          </div>
+          <div>
+            <label>Department</label>
+            <input type="text" id="empDept" required>
+          </div>
+          <div>
+            <label>Position</label>
+            <input type="text" id="empPosition" required>
+          </div>
+          <div>
+            <label>Salary</label>
+            <input type="number" id="empSalary" required min="0">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn">Add Employee</button>
+          <button type="button" class="btn btn-outline hidden" id="cancelEditBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Employee List -->
+    <div class="card">
+      <div class="list-header">
+        <h2>Employees</h2>
+        <input type="text" id="searchInput" placeholder="Search by name or department...">
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+
+      <p id="emptyState" class="empty-state hidden">No employees yet. Add one above.</p>
+    </div>
+
+  </main>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
