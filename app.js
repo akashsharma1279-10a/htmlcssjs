@@ -28,6 +28,27 @@ function clearCurrentUser() {
   sessionStorage.removeItem('ems_current_user');
 }
 
+// ---------- Initial Default Data ----------
+function initDefaultData() {
+  const users = getUsers();
+  if (users.length === 0) {
+    saveUsers([
+      { username: 'admin', password: 'admin123' },
+      { username: 'akas11', password: 'password123' }
+    ]);
+  }
+
+  const employees = getEmployees();
+  if (employees.length === 0) {
+    saveEmployees([
+      { id: '1700000000001', name: 'Rahul Sharma', email: 'rahul@example.com', department: 'Engineering', position: 'Senior Developer', salary: 1200000 },
+      { id: '1700000000002', name: 'Priya Patel', email: 'priya@example.com', department: 'Human Resources', position: 'HR Manager', salary: 850000 },
+      { id: '1700000000003', name: 'Amit Verma', email: 'amit@example.com', department: 'Marketing', position: 'Marketing Lead', salary: 950000 }
+    ]);
+  }
+}
+initDefaultData();
+
 // ---------- Page elements ----------
 const loginPage = document.getElementById('loginPage');
 const registerPage = document.getElementById('registerPage');
@@ -37,6 +58,15 @@ const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const loginError = document.getElementById('loginError');
 const registerError = document.getElementById('registerError');
+const fillDemoBtn = document.getElementById('fillDemoBtn');
+
+if (fillDemoBtn) {
+  fillDemoBtn.addEventListener('click', () => {
+    document.getElementById('loginUsername').value = 'admin';
+    document.getElementById('loginPassword').value = 'admin123';
+    loginError.textContent = '';
+  });
+}
 
 document.getElementById('goToRegister').addEventListener('click', (e) => {
   e.preventDefault();
